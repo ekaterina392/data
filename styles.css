@@ -1,0 +1,12 @@
+/* styles.css */
+#camera-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Adjust the number of columns as needed */
+    gap: 10px;
+}
+
+.camera-thumbnail {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
