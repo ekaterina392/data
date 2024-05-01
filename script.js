@@ -1,30 +1,38 @@
-// script.js
-const cameraGrid = document.getElementById('camera-grid');
-
-// Function to fetch data from the public cameras API
-async function fetchCameras() {
+// Function to fetch live traffic camera data from the proxy server
+async function fetchTrafficCameras() {
     try {
-        const response = await fetch('YOUR_API_ENDPOINT');
+        const response = await fetch('http://localhost:3000/traffic-cameras');
         const data = await response.json();
-        return data; // Assuming the API returns an array of camera objects
+        return data;
     } catch (error) {
-        console.error('Error fetching cameras:', error);
+        console.error('Error fetching traffic cameras:', error);
+        throw error;
     }
 }
 
-// Function to render cameras on the grid
-async function renderCameras() {
-    const cameras = await fetchCameras();
-    if (cameras) {
+// Function to display traffic cameras on the webpage
+async function displayCameras() {
+    const cameraContainer = document.getElementById("camera-container");
+
+    try {
+        const cameraData = await fetchTrafficCameras();
+        const cameras = cameraData.Items;
+
         cameras.forEach(camera => {
-            const cameraThumbnail = document.createElement('img');
-            cameraThumbnail.src = camera.imageUrl; // Assuming each camera object has an 'imageUrl' property
-            cameraThumbnail.alt = camera.name; // Assuming each camera object has a 'name' property
-            cameraThumbnail.classList.add('camera-thumbnail');
-            cameraGrid.appendChild(cameraThumbnail);
+            const cameraElement = document.createElement("div");
+            cameraElement.classList.add("camera");
+
+            const imgElement = document.createElement("img");
+            imgElement.src = camera.ImageUrl;
+            imgElement.alt = camera.Description;
+
+            cameraElement.appendChild(imgElement);
+            cameraContainer.appendChild(cameraElement);
         });
+    } catch (error) {
+        console.error('Error fetching and displaying traffic cameras:', error);
     }
 }
 
-// Call renderCameras function when the page loads
-window.onload = renderCameras;
+// Call the function to display traffic cameras when the page loads
+window.onload = displayCameras;
